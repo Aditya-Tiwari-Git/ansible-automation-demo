@@ -1,0 +1,10 @@
+
+#### **`inventory/inventory`**
+This file lists the IP addresses or hostnames of the servers you want to manage with Ansible.
+
+```ini
+[test_servers]
+192.168.1.101
+192.168.1.102
+
+# Add more servers as needed
