@@ -59,7 +59,7 @@ To demonstrate Ansible, we will set up a simple environment consisting of:
    - **Network**: Ensure the VM can communicate with the tester VMs via SSH.
 
 2. **Tester VMs (Managed Nodes):**
-   - **OS**: Linux (Ubuntu, CentOS) or Windows.
+   - **OS**: Linux (Ubuntu, CentOS) or Windows.[Ubuntu is preferred]
    - **Specs**: 1 CPU, 1 GB RAM, 10 GB HDD.
    - **Network**: Ensure these VMs can be accessed by the Master VM via SSH (Linux) or WinRM (Windows).
 
@@ -191,7 +191,6 @@ cd ~/ansible-automation-demo/inventory
 #### **3.2. Create an Inventory File**
 Create a file named `inventory`:
 ```ini
-[test_servers]
 192.168.1.101
 192.168.1.102
 ```
@@ -202,30 +201,50 @@ Replace the IP addresses with the actual IPs of your tester VMs.
 #### **4.1. Test Connectivity**
 Test if Ansible can reach the managed nodes:
 ```bash
-ansible -i inventory/test_servers -m ping all
+ansible -i inventory all -m ping
 ```
 You should see a "pong" response if the connection is successful.
 
-#### **4.2. Run an Ad-Hoc Command**
+#### **4.2. Create a Directory named testing in Testing VM**
+```bash
+mkdir /home/ubuntu/testing
+```
+
+#### **4.3. Run an Ad-Hoc Command**
 Create a test file on all managed nodes:
 ```bash
-ansible -i inventory/test_servers all -m shell -a "touch /tmp/ansible_testing"
+ansible -i inventory all -m shell -a "touch /home/ubuntu/testing/ansible-testing"
 ```
+#### **4.4. Testing an Ad-Hoc Command**
+Go to Testing VM and type the command:-
+```bash
+cd /home/ubuntu/testing
+```
+and list the files
+```bash
+ls
+```
+You will be able to see ansible-testing file over there.
 
 ### **5. Writing and Executing an Ansible Playbook**
 
 #### **5.1. Create a Directory for Playbooks**
 ```bash
+mkdir ~/ansible-automation-demo
 mkdir ~/ansible-automation-demo/playbooks
 ```
 
 #### **5.2. Create the Ansible Playbook**
+```bash
+cd ~/ansible-automation-demo/playbooks
+vim ansibleProject.yml
+```
 
-**File:** `playbooks/ansibleProject.yml`
+**File:** `ansibleProject.yml`
 ```yaml
 ---
 - name: Install and start NGINX on test servers
-  hosts: test_servers
+  hosts: all
   become: yes
   
   tasks:
@@ -233,7 +252,6 @@ mkdir ~/ansible-automation-demo/playbooks
       apt:
         name: nginx
         state: present
-      when: ansible_os_family == "Debian"
 
     - name: Start NGINX service
       service:
@@ -244,7 +262,7 @@ mkdir ~/ansible-automation-demo/playbooks
 #### **5.3. Execute the Playbook**
 Run the playbook to install and start NGINX:
 ```bash
-ansible-playbook -i inventory/test_servers playbooks/ansibleProject.yml
+ansible-playbook -i /home/ubuntu/inventory/ playbooks/ansibleProject.yml
 ```
 
 ### **6. Verification and Validation**
