@@ -184,8 +184,8 @@ You should see the version information and a successful installation message.
 
 #### **3.1. Create an Inventory Directory**
 ```bash
-mkdir ~/ansible-automation-demo/inventory
-cd ~/ansible-automation-demo/inventory
+mkdir /home/ubuntu/inventory
+cd /home/ubuntu/inventory
 ```
 
 #### **3.2. Create an Inventory File**
@@ -262,7 +262,7 @@ vim ansibleProject.yml
 #### **5.3. Execute the Playbook**
 Run the playbook to install and start NGINX:
 ```bash
-ansible-playbook -i /home/ubuntu/inventory/ playbooks/ansibleProject.yml
+ansible-playbook -i /home/ubuntu/inventory/ /home/ubuntu/ansible-automation-demo/playbooks/ansibleProject.yml
 ```
 
 ### **6. Verification and Validation**
@@ -284,8 +284,8 @@ If you no longer need the VMs, power them off and remove them from your virtuali
 #### **7.2. Remove Temporary Files**
 Remove any temporary files created during testing:
 ```bash
-rm ~/ansible-automation-demo/inventory/inventory
-rm -r ~/ansible-automation-demo/playbooks
+rm home/ubuntu/inventory/inventory
+rm -r /home/ubuntu/ansible-automation-demo/playbooks
 ```
 
 ### **8. Conclusion**
