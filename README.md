@@ -67,14 +67,92 @@ To demonstrate Ansible, we will set up a simple environment consisting of:
 - **Private Network**: Configure the VMs to be on the same private network to allow communication between the control node and managed nodes.
 
 #### **1.4. SSH Setup (For Linux VMs)**
-1. On the Master VM, generate an SSH key:
+Certainly! Below is the updated guide with the specific commands you requested for Step 2.
+
+---
+
+**Setting Up Passwordless SSH Authentication**
+Passwordless SSH allows secure, automatic login between the Master VM and Tester VMs without needing to enter a password every time. Below is a step-by-step guide for setting up passwordless SSH authentication between your Master VM and Tester VMs.
+
+#### **Step 1: Generate SSH Key Pair on the Master VM**
+
+1. **Generate SSH Key Pair**:
    ```bash
    ssh-keygen -t rsa -b 4096
    ```
-2. Copy the SSH key to each tester VM:
+   - **Location**: Press `Enter` to accept the default location (`/home/ubuntu/.ssh/id_rsa`).
+   - **Passphrase**: Press `Enter` to skip setting a passphrase.
+
+2. **List the Keys**:
    ```bash
-   ssh-copy-id username@vm-ip-address
+   ls /home/ubuntu/.ssh/
    ```
+   - **Expected Output**:
+     ```
+     authorized_keys  id_rsa  id_rsa.pub
+     ```
+
+3. **View and Copy the Public Key**:
+   ```bash
+   cat /home/ubuntu/.ssh/id_rsa.pub
+   ```
+   - **Copy the output** (starting with `ssh-rsa`) to your clipboard.
+
+---
+
+#### **Step 2: Set Up the Tester VM for Passwordless SSH**
+
+1. **Login to the Tester VM**:
+   - From the Master VM, SSH into the Tester VM:
+     ```bash
+     ssh ubuntu@<tester-vm-ip-address>
+     ```
+   - Enter the password when prompted.
+
+2. **Navigate to the `.ssh` Directory**:
+   ```bash
+   cd /home/ubuntu/.ssh/
+   ```
+   - **Explanation**: This directory holds SSH configuration files, including the `authorized_keys` file where public keys are stored.
+
+3. **Edit the `authorized_keys` File**:
+   - Open the `authorized_keys` file with a text editor:
+     ```bash
+     vim authorized_keys
+     ```
+   - **Paste the Public Key**: 
+     - Paste the public key that you copied from the Master VM.
+   - **Save and Exit**: 
+     - Press `Esc`, type `:wq`, and press `Enter` to save the file and exit the editor.
+
+4. **Set Permissions (if needed)**:
+   ```bash
+   chmod 600 /home/ubuntu/.ssh/authorized_keys
+   ```
+   - **Explanation**: This ensures that the `authorized_keys` file is readable only by the owner for security purposes.
+
+5. **Logout from the Tester VM**:
+   ```bash
+   logout
+   ```
+
+---
+
+#### **Step 3: Test Passwordless SSH Login**
+
+1. **Test SSH Login from the Master VM**:
+   ```bash
+   ssh ubuntu@<tester-vm-ip-address>
+   ```
+   - **Expected Result**: You should log in without being prompted for a password.
+
+---
+
+#### **Step 4: Repeat for Additional Tester VMs**
+
+- Repeat **Step 2** and **Step 3** for each additional Tester VM you want to set up for passwordless SSH.
+
+---
 
 #### **1.5. Install Python on Managed Nodes**
 - Ensure Python is installed on all Linux managed nodes:
